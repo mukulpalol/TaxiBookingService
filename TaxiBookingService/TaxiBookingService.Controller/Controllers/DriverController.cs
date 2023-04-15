@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TaxiBookingService.Common;
 using TaxiBookingService.Logic.Services;
@@ -8,6 +9,7 @@ namespace TaxiBookingService.Controller.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+    [Authorize(Roles = "Driver")]
     public class DriverController : ControllerBase
     {
         private readonly ResponseBase responseBase;

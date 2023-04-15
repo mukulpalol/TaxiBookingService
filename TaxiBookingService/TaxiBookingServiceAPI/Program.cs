@@ -28,6 +28,52 @@ namespace TaxiBookingService.Host
                 loggingProvider.AddEventLog();
             });
 
+            builder.Services.AddMvc();
+
+            builder.Services.AddAuthorization();
+
+            builder.Services.AddControllers();
+
+            builder.Services.AddEndpointsApiExplorer();
+
+            builder.Services.AddSwaggerGen(options =>
+            {
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "JWT Authorization header using the Bearer scheme.",
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer"
+                });
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                    {
+                        {
+                            new OpenApiSecurityScheme
+                            {
+                                Reference = new OpenApiReference
+                                {
+                                    Type = ReferenceType.SecurityScheme,
+                                    Id = "Bearer"
+                                 }
+                            },
+                            new string[] { }
+                        }
+                    });
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                    {
+                        {
+                            new OpenApiSecurityScheme
+                            {
+                                Reference = new OpenApiReference
+                                {
+                                    Type = ReferenceType.SecurityScheme,
+                                    Id = "Bearer"
+                                }
+                            },
+                            new[] { "readAccess", "writeAccess" }
+                        }
+                    });
+            });
+
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                             .AddJwtBearer(options =>
                             {
@@ -49,11 +95,7 @@ namespace TaxiBookingService.Host
                 options.IdleTimeout = TimeSpan.FromMinutes(15);
             });
 
-            builder.Services.AddMvc();
-
-            builder.Services.AddEndpointsApiExplorer();
-
-            builder.Services.AddSwaggerGen(options =>
+            /*builder.Services.AddSwaggerGen(options =>
             {
                 // other Swagger configuration options
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -76,7 +118,7 @@ namespace TaxiBookingService.Host
                             new string[] { }
                         }
                     });
-            });
+            });*/
 
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -96,11 +138,13 @@ namespace TaxiBookingService.Host
                 app.UseSwaggerUI();
             }
 
-            app.UseSession();
+            app.UseHttpLogging();
             app.UseHttpsRedirection();
+            app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseRouting();
+            //app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            app.UseSession();
             app.MapControllers();
             app.Run();
         }
