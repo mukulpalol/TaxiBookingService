@@ -17,7 +17,7 @@ namespace TaxiBookingService.Host
 
             builder.Services.AddDbContext<TbsDbContext>(
                 options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
-                b => b.MigrationsAssembly("TaxiBookingService.Host")
+                m => m.MigrationsAssembly("TaxiBookingService.Host")
                 ));
 
             builder.Host.ConfigureLogging(loggingProvider =>
@@ -95,31 +95,6 @@ namespace TaxiBookingService.Host
                 options.IdleTimeout = TimeSpan.FromMinutes(15);
             });
 
-            /*builder.Services.AddSwaggerGen(options =>
-            {
-                // other Swagger configuration options
-                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                {
-                    Description = "JWT Authorization header using the Bearer scheme.",
-                    Type = SecuritySchemeType.Http,
-                    Scheme = "bearer"
-                });
-                options.AddSecurityRequirement(new OpenApiSecurityRequirement
-                    {
-                        {
-                            new OpenApiSecurityScheme
-                            {
-                                Reference = new OpenApiReference
-                                {
-                                    Type = ReferenceType.SecurityScheme,
-                                    Id = "Bearer"
-                                 }
-                            },
-                            new string[] { }
-                        }
-                    });
-            });*/
-
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IAuthService, AuthService>();
@@ -143,7 +118,6 @@ namespace TaxiBookingService.Host
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-            //app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
             app.UseSession();
             app.MapControllers();
             app.Run();

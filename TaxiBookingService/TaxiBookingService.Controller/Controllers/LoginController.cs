@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TaxiBookingService.Common;
@@ -48,7 +49,7 @@ namespace TaxiBookingService.Controller.Controllers
                 return response;
             }
         }
-        #endregion
+        #endregion        
 
         #region SignUpCustomer
         [HttpPost]
@@ -86,6 +87,31 @@ namespace TaxiBookingService.Controller.Controllers
                 responseBase.ResponseMsg = $"Error in SignUpDriver: {ex.Message}";
                 responseBase.ResponseResult = ResponseResult.Exception;
                 return responseBase;
+            }
+        }
+        #endregion
+
+        #region RefreshToken
+        [Authorize]
+        [HttpGet]
+        public async Task<LoginResponseDTO> RefreshToken()
+        {
+            try
+            {
+                logger.LogInformation("RefreshToken called");
+                var response = await authService.RefreshToken();
+                HttpContext.Session.SetString("Token", response.AccessToken);
+                return response;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Error in RefreshToken: {ex.Message}");
+                LoginResponseDTO response = new LoginResponseDTO()
+                {
+                    ResponseMsg = $"Error in RefreshToken: {ex.Message}",
+                    ResponseResult = ResponseResult.Exception
+                };
+                return response;
             }
         }
         #endregion

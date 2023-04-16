@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -15,19 +16,22 @@ namespace TaxiBookingService.Logic.Services
     {
         Task<LoginResponseDTO> AuthenticateUser(LoginRequestDTO userLogin);
         Task<LoginResponseDTO> AuthorizeUser(User userLogin);
+        Task<LoginResponseDTO> RefreshToken();
     }
 
     public class AuthService : IAuthService
     {
         private readonly IAuthRepository authRepository;
         private readonly IConfiguration configuration;
+        private readonly IUserService userService;
         private readonly ILogger<AuthService> logger;
 
         #region Constructor
-        public AuthService(IAuthRepository authRepository, IConfiguration configuration, ILogger<AuthService> logger)
+        public AuthService(IAuthRepository authRepository, IConfiguration configuration, IUserService userService, ILogger<AuthService> logger)
         {
             this.authRepository = authRepository;
             this.configuration = configuration;
+            this.userService = userService;
             this.logger = logger;
         }
         #endregion
@@ -76,7 +80,7 @@ namespace TaxiBookingService.Logic.Services
                 logger.LogError($"Error in AuthenticateUser: {ex.Message}");
                 LoginResponseDTO response = new LoginResponseDTO()
                 {
-                    ResponseMsg = "Error in AuthenticateUser: {ex.Message}",
+                    ResponseMsg = $"Error in AuthenticateUser: {ex.Message}",
                     ResponseResult = ResponseResult.Exception
                 };
                 return response;
@@ -130,6 +134,49 @@ namespace TaxiBookingService.Logic.Services
                 LoginResponseDTO response = new LoginResponseDTO()
                 {
                     ResponseMsg = $"Error in AuthorizeUser: {ex.Message}",
+                    ResponseResult = ResponseResult.Exception
+                };
+                return response;
+            }
+        }
+        #endregion
+
+        #region RefreshToken
+        public async Task<LoginResponseDTO> RefreshToken()
+        {
+            try
+            {
+                var claim = userService.GetCurrentUser();
+                if(claim.ResponseResult != ResponseResult.Success)
+                {
+                    logger.LogWarning(claim.ResponseMsg);
+                    LoginResponseDTO response = new LoginResponseDTO()
+                    {
+                        ResponseMsg = claim.ResponseMsg,
+                        ResponseResult = claim.ResponseResult
+                    };
+                    return response;
+                }
+                var user = await authRepository.GetUser(claim.Email);
+                if(user == null)
+                {
+                    logger.LogWarning("Error in RefreshToken: User does not exist");
+                    LoginResponseDTO response = new LoginResponseDTO()
+                    {
+                        ResponseMsg = "Error in RefreshToken: User does not exist",
+                        ResponseResult = ResponseResult.Warning
+                    };
+                    return response;
+                }
+                var responseDTO = await AuthorizeUser(user);
+                return responseDTO;
+            }
+            catch(Exception ex)
+            {
+                logger.LogError($"Error in RefreshToken: {ex.Message}");
+                LoginResponseDTO response = new LoginResponseDTO()
+                {
+                    ResponseMsg = $"Error in RefreshToken: {ex.Message}",
                     ResponseResult = ResponseResult.Exception
                 };
                 return response;
