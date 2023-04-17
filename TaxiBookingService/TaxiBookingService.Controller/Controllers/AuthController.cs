@@ -4,25 +4,23 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TaxiBookingService.Common;
 using TaxiBookingService.Logic.Services;
-using TaxiBookingServices.API.Service_Contract;
+using TaxiBookingServices.API.LoginContract;
 
 namespace TaxiBookingService.Controller.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class LoginController : ControllerBase
+    public class AuthController : ControllerBase
     {
         private readonly IUserService userService;
         private readonly IAuthService authService;
-        private readonly ResponseBase responseBase;
-        private readonly ILogger<LoginController> logger;
+        private readonly ILogger<AuthController> logger;
 
         #region Constructor
-        public LoginController(IUserService userService, IAuthService authService, ILogger<LoginController> logger)
+        public AuthController(IUserService userService, IAuthService authService, ILogger<AuthController> logger)
         {
             this.userService = userService;
             this.authService = authService;
-            responseBase = new ResponseBase();
             this.logger = logger;
         }
         #endregion
@@ -53,7 +51,7 @@ namespace TaxiBookingService.Controller.Controllers
 
         #region SignUpCustomer
         [HttpPost]
-        public async Task<ResponseBase> SignUpCustomer(CustomerAddDTO customerAdd)
+        public async Task<SignUpResponseDTO> SignUpCustomer(CustomerAddDTO customerAdd)
         {
             try
             {
@@ -64,16 +62,19 @@ namespace TaxiBookingService.Controller.Controllers
             catch (Exception ex)
             {
                 logger.LogError($"Error in SignUpCustomer: {ex.Message}");
-                responseBase.ResponseMsg = $"Error in SignUpCustomer: {ex.Message}";
-                responseBase.ResponseResult = ResponseResult.Exception;
-                return responseBase;
+                SignUpResponseDTO response = new SignUpResponseDTO()
+                {
+                    ResponseMsg = $"Error in SignUpCustomer: {ex.Message}",
+                    ResponseResult = ResponseResult.Exception
+                };
+                return response;
             }
         }
         #endregion
 
         #region SignUpDriver
         [HttpPost]
-        public async Task<ResponseBase> SignUpDriver(DriverAddDTO driverAdd)
+        public async Task<SignUpResponseDTO> SignUpDriver(DriverAddDTO driverAdd)
         {
             try
             {
@@ -84,9 +85,12 @@ namespace TaxiBookingService.Controller.Controllers
             catch (Exception ex)
             {
                 logger.LogError($"Error in SignUpDriver: {ex.Message}");
-                responseBase.ResponseMsg = $"Error in SignUpDriver: {ex.Message}";
-                responseBase.ResponseResult = ResponseResult.Exception;
-                return responseBase;
+                SignUpResponseDTO response = new SignUpResponseDTO()
+                {
+                    ResponseMsg = $"Error in SignUpDriver: {ex.Message}",
+                    ResponseResult = ResponseResult.Exception
+                };
+                return response;
             }
         }
         #endregion

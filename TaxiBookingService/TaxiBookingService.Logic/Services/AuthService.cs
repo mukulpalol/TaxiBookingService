@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -8,7 +7,7 @@ using System.Text;
 using TaxiBookingService.Common;
 using TaxiBookingService.DAL.Models;
 using TaxiBookingService.DAL.Repositories;
-using TaxiBookingServices.API.Service_Contract;
+using TaxiBookingServices.API.LoginContract;
 
 namespace TaxiBookingService.Logic.Services
 {
@@ -147,7 +146,7 @@ namespace TaxiBookingService.Logic.Services
             try
             {
                 var claim = userService.GetCurrentUser();
-                if(claim.ResponseResult != ResponseResult.Success)
+                if (claim.ResponseResult != ResponseResult.Success)
                 {
                     logger.LogWarning(claim.ResponseMsg);
                     LoginResponseDTO response = new LoginResponseDTO()
@@ -158,7 +157,7 @@ namespace TaxiBookingService.Logic.Services
                     return response;
                 }
                 var user = await authRepository.GetUser(claim.Email);
-                if(user == null)
+                if (user == null)
                 {
                     logger.LogWarning("Error in RefreshToken: User does not exist");
                     LoginResponseDTO response = new LoginResponseDTO()
@@ -171,7 +170,7 @@ namespace TaxiBookingService.Logic.Services
                 var responseDTO = await AuthorizeUser(user);
                 return responseDTO;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 logger.LogError($"Error in RefreshToken: {ex.Message}");
                 LoginResponseDTO response = new LoginResponseDTO()

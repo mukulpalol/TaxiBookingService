@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TaxiBookingService.DAL.Models;
-using TaxiBookingServices.API.Service_Contract;
+using TaxiBookingServices.API.LoginContract;
 
 namespace TaxiBookingService.DAL.Repositories
 {

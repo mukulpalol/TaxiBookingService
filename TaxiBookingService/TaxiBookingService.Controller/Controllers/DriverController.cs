@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TaxiBookingService.Common;
 using TaxiBookingService.Logic.Services;
-using TaxiBookingServices.API.Service_Contract;
+using TaxiBookingServices.API.CustomerContract;
+using TaxiBookingServices.API.DriverContract;
 
 namespace TaxiBookingService.Controller.Controllers
 {
@@ -29,7 +30,7 @@ namespace TaxiBookingService.Controller.Controllers
 
         #region UpdateLocation
         [HttpPost]
-        public async Task<ResponseBase> UpdateLocation(UpdateLocationRequestDTO updateLocation)
+        public async Task<UpdateLocationResponseDTO> UpdateLocation(UpdateLocationRequestDTO updateLocation)
         {
             try
             {
@@ -40,16 +41,19 @@ namespace TaxiBookingService.Controller.Controllers
             catch (Exception ex)
             {
                 logger.LogError($"Error in UpdateLocation: {ex.Message}");
-                responseBase.ResponseMsg = $"Error in UpdateLocation: {ex.Message}";
-                responseBase.ResponseResult = ResponseResult.Exception;
-                return responseBase;
+                UpdateLocationResponseDTO response = new UpdateLocationResponseDTO()
+                {
+                    ResponseMsg = $"Error in UpdateLocation: {ex.Message}",
+                    ResponseResult = ResponseResult.Exception
+                };
+                return response;
             }
         }
         #endregion
 
         #region UpdateAvailability
         [HttpPost]
-        public async Task<ResponseBase> UpdateAvailability(bool availability)
+        public async Task<UpdateAvailabilityResponseDTO> UpdateAvailability(UpdateAvailabilityRequestDTO availability)
         {
             try
             {
@@ -60,9 +64,12 @@ namespace TaxiBookingService.Controller.Controllers
             catch (Exception ex)
             {
                 logger.LogError($"Error in UpdateAvailability: {ex.Message}");
-                responseBase.ResponseMsg = $"Error in UpdateAvailability: {ex.Message}";
-                responseBase.ResponseResult = ResponseResult.Exception;
-                return responseBase;
+                var response = new UpdateAvailabilityResponseDTO()
+                {
+                    ResponseMsg = $"Error in UpdateAvailability: {ex.Message}",
+                    ResponseResult = ResponseResult.Exception
+                };
+                return response;
             }
         }
         #endregion
@@ -70,7 +77,7 @@ namespace TaxiBookingService.Controller.Controllers
         #region GetRideRequest
         [HttpGet]
         public async Task<DriverViewRideResponseDTO> GetRideRequest()
-        {            
+        {
             try
             {
                 logger.LogInformation("GetRideRequest called");
@@ -92,52 +99,58 @@ namespace TaxiBookingService.Controller.Controllers
 
         #region RideAccept
         [HttpPost]
-        public async Task<ResponseBase> RideAccept(int rideId, bool Accept)
+        public async Task<RideAcceptResponseDTO> RideAccept(RideAcceptRequestDTO rideAccept)
         {
             try
             {
                 logger.LogInformation("RideAccept called");
-                var response = await rideService.DriverRideAccept(rideId, Accept);
+                var response = await rideService.DriverRideAccept(rideAccept);
                 return response;
             }
             catch (Exception ex)
             {
                 logger.LogError($"Error in RideAccept: {ex.Message}");
-                responseBase.ResponseMsg = $"Error in RideAccept: {ex.Message}";
-                responseBase.ResponseResult = ResponseResult.Exception;
-                return responseBase;
+                RideAcceptResponseDTO response = new RideAcceptResponseDTO()
+                {
+                    ResponseMsg = $"Error in RideAccept: {ex.Message}",
+                    ResponseResult = ResponseResult.Exception
+                };
+                return response;
             }
         }
         #endregion
 
         #region RideStarted
         [HttpPost]
-        public async Task<ResponseBase> RideStarted(int rideId)
+        public async Task<RideStartedResponseDTO> RideStarted(RideIdRequestDTO rideStarted)
         {
             try
             {
                 logger.LogInformation("RideStarted called");
-                var response = await rideService.RideStarted(rideId);
+                var response = await rideService.RideStarted(rideStarted);
                 return response;
             }
             catch (Exception ex)
             {
                 logger.LogError($"Error in RideStarted: {ex.Message}");
-                responseBase.ResponseMsg = $"Error in RideStarted: {ex.Message}";
-                responseBase.ResponseResult = ResponseResult.Exception;
-                return responseBase;
+                RideStartedResponseDTO response = new RideStartedResponseDTO()
+                {
+                    ResponseMsg = $"Error in RideStarted: {ex.Message}",
+                    ResponseResult = ResponseResult.Exception
+                };
+                return response;
             }
         }
         #endregion
 
         #region RideCompleted
         [HttpPost]
-        public async Task<RideCompleteResponseDTO> RideCompleted(int rideId)
+        public async Task<RideCompleteResponseDTO> RideCompleted(RideIdRequestDTO rideCompleted)
         {
             try
             {
                 logger.LogInformation("RideCompleted called");
-                var response = await rideService.RideCompleted(rideId);
+                var response = await rideService.RideCompleted(rideCompleted);
                 return response;
             }
             catch (Exception ex)
@@ -155,7 +168,7 @@ namespace TaxiBookingService.Controller.Controllers
 
         #region SubmitRating
         [HttpPost]
-        public async Task<ResponseBase> SubmitRating(SubmitRatingRequestDTO submitRatingRequest)
+        public async Task<RatingResponseDTO> SubmitRating(SubmitRatingRequestDTO submitRatingRequest)
         {
             try
             {
@@ -166,9 +179,12 @@ namespace TaxiBookingService.Controller.Controllers
             catch (Exception ex)
             {
                 logger.LogError($"Error in SubmitRating: {ex.Message}");
-                responseBase.ResponseMsg = $"Error in SubmitRating: {ex.Message}";
-                responseBase.ResponseResult = ResponseResult.Exception;
-                return responseBase;
+                RatingResponseDTO response = new RatingResponseDTO()
+                {
+                    ResponseMsg = $"Error in SubmitRating: {ex.Message}",
+                    ResponseResult = ResponseResult.Exception
+                };
+                return response;
             }
         }
         #endregion

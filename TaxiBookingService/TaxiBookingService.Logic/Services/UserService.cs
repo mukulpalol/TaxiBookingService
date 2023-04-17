@@ -4,14 +4,14 @@ using System.Security.Claims;
 using TaxiBookingService.Common;
 using TaxiBookingService.DAL.Models;
 using TaxiBookingService.DAL.Repositories;
-using TaxiBookingServices.API.Service_Contract;
+using TaxiBookingServices.API.LoginContract;
 
 namespace TaxiBookingService.Logic.Services
 {
     public interface IUserService
     {
-        Task<ResponseBase> AddCustomer(CustomerAddDTO customerAdd);
-        Task<ResponseBase> AddDriver(DriverAddDTO driverAdd);
+        Task<SignUpResponseDTO> AddCustomer(CustomerAddDTO customerAdd);
+        Task<SignUpResponseDTO> AddDriver(DriverAddDTO driverAdd);
         ClaimResponseDTO GetCurrentUser();
     }
 
@@ -19,7 +19,7 @@ namespace TaxiBookingService.Logic.Services
     {
         private readonly IUserRepository userRepository;
         private readonly ILogger<UserService> logger;
-        private readonly ResponseBase responseBase;
+        private readonly SignUpResponseDTO responseBase;
         private readonly IHttpContextAccessor httpContext;
 
         #region Constructor
@@ -27,37 +27,46 @@ namespace TaxiBookingService.Logic.Services
         {
             this.userRepository = userRepository;
             this.logger = logger;
-            responseBase = new ResponseBase();
+            responseBase = new SignUpResponseDTO();
             this.httpContext = httpContext;
 
         }
         #endregion
 
         #region AddCustomer
-        public async Task<ResponseBase> AddCustomer(CustomerAddDTO customerAdd)
+        public async Task<SignUpResponseDTO> AddCustomer(CustomerAddDTO customerAdd)
         {
             try
             {
                 if (customerAdd == null)
                 {
-                    responseBase.ResponseMsg = "Null input";
-                    responseBase.ResponseResult = ResponseResult.Warning;
+                    SignUpResponseDTO response = new SignUpResponseDTO()
+                    {
+                        ResponseMsg = "Null input",
+                        ResponseResult = ResponseResult.Warning
+                    };
                     logger.LogWarning("Error in AddCustomer: Null Input");
-                    return responseBase;
+                    return response;
                 }
                 if (await userRepository.UserEmailExists(customerAdd.Email) != null)
                 {
-                    responseBase.ResponseMsg = "Customer with this email already exists";
-                    responseBase.ResponseResult = ResponseResult.Warning;
+                    SignUpResponseDTO response = new SignUpResponseDTO()
+                    {
+                        ResponseMsg = "Customer with this email already exists",
+                        ResponseResult = ResponseResult.Warning
+                    };
                     logger.LogWarning("Error in AddCustomer: Customer with this email already exists");
-                    return responseBase;
+                    return response;
                 }
                 if (await userRepository.UserPhoneExists(customerAdd.PhoneNumber) != null)
                 {
-                    responseBase.ResponseMsg = "Customer with this phone number already exists";
-                    responseBase.ResponseResult = ResponseResult.Warning;
+                    SignUpResponseDTO response = new SignUpResponseDTO()
+                    {
+                        ResponseMsg = "Customer with this phone number already exists",
+                        ResponseResult = ResponseResult.Warning
+                    };
                     logger.LogWarning("Error in AddCustomer: Customer with this phone number already exists");
-                    return responseBase;
+                    return response;
                 }
                 User user = new()
                 {
@@ -78,29 +87,35 @@ namespace TaxiBookingService.Logic.Services
                     TotalRides = 0
                 };
                 await userRepository.AddCustomer(user, customer);
-                responseBase.ResponseMsg = "Customer added successfully";
-                responseBase.ResponseResult = ResponseResult.Success;
-                return responseBase;
+                SignUpResponseDTO responseDTO = new SignUpResponseDTO()
+                {
+                    ResponseMsg = "Customer added successfully",
+                    ResponseResult = ResponseResult.Success
+                };
+                return responseDTO;
             }
             catch (Exception ex)
             {
                 logger.LogError($"Error in AddCustomer: {ex.Message}");
-                responseBase.ResponseMsg = $"Error in AddCustomer: {ex.Message}";
-                responseBase.ResponseResult = ResponseResult.Exception;
-                return responseBase;
+                SignUpResponseDTO response = new SignUpResponseDTO()
+                {
+                    ResponseMsg = $"Error in AddCustomer: {ex.Message}",
+                    ResponseResult = ResponseResult.Exception
+                };
+                return response;
             }
         }
         #endregion
 
         #region AddDriver
-        public async Task<ResponseBase> AddDriver(DriverAddDTO driverAdd)
+        public async Task<SignUpResponseDTO> AddDriver(DriverAddDTO driverAdd)
         {
             try
             {
                 if (driverAdd == null)
                 {
                     responseBase.ResponseMsg = "Null input";
-                    responseBase.ResponseResult = ResponseResult.Warning;
+                    responseBase.ResponseResult = ResponseResult.Warning;                    
                     logger.LogWarning("Error in AddCustomer: Null Input");
                     return responseBase;
                 }

@@ -19,6 +19,7 @@ namespace TaxiBookingService.DAL
         public virtual DbSet<Ride> Rides { get; set; }
         public virtual DbSet<RidesDeclined> RidesDeclined { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
+        public virtual DbSet<Setting> Settings { get; set; }
         public virtual DbSet<State> States { get; set; }
         public virtual DbSet<Status> Statuses { get; set; }
         public virtual DbSet<User> Users { get; set; }
@@ -27,6 +28,9 @@ namespace TaxiBookingService.DAL
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Setting>().HasData(
+                new Setting { Id = 1, SettingName = "CancellationFactor", Value = 0.05M });
+
             modelBuilder.Entity<State>().HasData(
                 new State { Id = 1, Name = "Karnataka" },
                 new State { Id = 2, Name = "Maharashtra" },

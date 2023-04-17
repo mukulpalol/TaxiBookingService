@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TaxiBookingService.DAL.Models;
-using TaxiBookingServices.API.Service_Contract;
 
 namespace TaxiBookingService.DAL.Repositories
 {
@@ -18,77 +17,43 @@ namespace TaxiBookingService.DAL.Repositories
     public class UserRepository : IUserRepository
     {
         private readonly TbsDbContext db;
-        private readonly ILogger<UserRepository> logger;
 
         #region Constructor
-        public UserRepository(TbsDbContext db, ILogger<UserRepository> logger)
+        public UserRepository(TbsDbContext db)
         {
             this.db = db;
-            this.logger = logger;
         }
         #endregion
 
         #region UserEmailExists
         public async Task<User> UserEmailExists(string email)
         {
-            try
-            {
-                var user = await db.Users.FirstOrDefaultAsync(x => x.Email == email);
-                return user;
-            }
-            catch (Exception ex)
-            {
-                logger.LogError($"Error in UserExists: {ex.Message}");
-                throw new Exception(ex.Message);
-            }
+            var user = await db.Users.FirstOrDefaultAsync(x => x.Email == email);
+            return user;
         }
         #endregion
 
         #region UserPhoneExists
         public async Task<User> UserPhoneExists(string phone)
         {
-            try
-            {
-                var user = await db.Users.FirstOrDefaultAsync(x => x.PhoneNumber == phone);
-                return user;
-            }
-            catch (Exception ex)
-            {
-                logger.LogError($"Error in UserExists: {ex.Message}");
-                throw new Exception(ex.Message);
-            }
+            var user = await db.Users.FirstOrDefaultAsync(x => x.PhoneNumber == phone);
+            return user;
         }
         #endregion
 
         #region VehicleExists
         public async Task<Vehicle> VehicleExists(string vehicleNumber)
         {
-            try
-            {
-                var vehicle = await db.Vehicles.FirstOrDefaultAsync(x => x.VehicleNumber == vehicleNumber);
-                return vehicle;
-            }
-            catch (Exception ex)
-            {
-                logger.LogError($"Error in VehicleExists: {ex.Message}");
-                throw new Exception(ex.Message);
-            }
+            var vehicle = await db.Vehicles.FirstOrDefaultAsync(x => x.VehicleNumber == vehicleNumber);
+            return vehicle;
         }
         #endregion
 
         #region LocationExists
         public async Task<Location> LocationExists(int locationId)
         {
-            try
-            {
-                var location = await db.Locations.FirstOrDefaultAsync(x => x.Id == locationId);
-                return location;
-            }
-            catch(Exception ex)
-            {
-                logger.LogError($"Error in LocationExists: {ex.Message}");
-                throw new Exception(ex.Message);
-            }
+            var location = await db.Locations.FirstOrDefaultAsync(x => x.Id == locationId);
+            return location;
         }
         #endregion
 
@@ -104,35 +69,19 @@ namespace TaxiBookingService.DAL.Repositories
         #region AddCustomer
         public async Task AddCustomer(User user, Customer customer)
         {
-            try
-            {              
-                await db.Users.AddAsync(user);
-                await db.Customers.AddAsync(customer);
-                await db.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                logger.LogError($"Error in AddCustomer: {ex.Message}");
-                throw new Exception(ex.Message);
-            }
+            await db.Users.AddAsync(user);
+            await db.Customers.AddAsync(customer);
+            await db.SaveChangesAsync();
         }
         #endregion
 
         #region AddDriver
-        public async Task AddDriver(Vehicle vehicle, User user,Driver driver)
+        public async Task AddDriver(Vehicle vehicle, User user, Driver driver)
         {
-            try
-            {
-                await db.Users.AddAsync(user);
-                await db.Vehicles.AddAsync(vehicle);
-                await db.Drivers.AddAsync(driver);
-                await db.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                logger.LogError($"Error in AddDriver: {ex.Message}");
-                throw new Exception(ex.Message);
-            }
+            await db.Users.AddAsync(user);
+            await db.Vehicles.AddAsync(vehicle);
+            await db.Drivers.AddAsync(driver);
+            await db.SaveChangesAsync();
         }
         #endregion
     }

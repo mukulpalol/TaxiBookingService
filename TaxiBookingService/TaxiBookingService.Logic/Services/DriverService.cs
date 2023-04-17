@@ -1,14 +1,14 @@
 ﻿using Microsoft.Extensions.Logging;
 using TaxiBookingService.Common;
 using TaxiBookingService.DAL.Repositories;
-using TaxiBookingServices.API.Service_Contract;
+using TaxiBookingServices.API.DriverContract;
 
 namespace TaxiBookingService.Logic.Services
 {
     public interface IDriverService
     {
-        Task<ResponseBase> UpdateLocation(UpdateLocationRequestDTO updateLocation);
-        Task<ResponseBase> UpdateAvailability(bool availability);
+        Task<UpdateLocationResponseDTO> UpdateLocation(UpdateLocationRequestDTO updateLocation);
+        Task<UpdateAvailabilityResponseDTO> UpdateAvailability(UpdateAvailabilityRequestDTO availability);
         Task<BookRideDriverResponseDTO> GetRideRequest();
     }
 
@@ -33,53 +33,68 @@ namespace TaxiBookingService.Logic.Services
         #endregion
 
         #region UpdateLocation
-        public async Task<ResponseBase> UpdateLocation(UpdateLocationRequestDTO updateLocation)
+        public async Task<UpdateLocationResponseDTO> UpdateLocation(UpdateLocationRequestDTO updateLocation)
         {
             try
             {
                 int locationId = updateLocation.LocationId;
                 if ((await userRepository.LocationExists(locationId)) == null)
                 {
-                    responseBase.ResponseMsg = "Location does not exist";
-                    responseBase.ResponseResult = ResponseResult.Warning;
+                    UpdateLocationResponseDTO response = new UpdateLocationResponseDTO()
+                    {
+                        ResponseMsg = "Location does not exist",
+                        ResponseResult = ResponseResult.Warning
+                    };
                     logger.LogWarning("Error in UpdateLocation: Location does not exist");
-                    return responseBase;
+                    return response;
                 }
                 var claim = userService.GetCurrentUser();
                 var UserEmail = claim.Email;
                 var user = await userRepository.UserEmailExists(UserEmail);
                 if (user == null)
                 {
-                    responseBase.ResponseMsg = "User is null";
-                    responseBase.ResponseResult = ResponseResult.Warning;
+                    UpdateLocationResponseDTO response = new UpdateLocationResponseDTO()
+                    {
+                        ResponseMsg = "User is null",
+                        ResponseResult = ResponseResult.Warning
+                    };
                     logger.LogWarning("Error in UpdateLocation: User is null");
-                    return responseBase;
+                    return response;
                 }
                 var driver = await driverRepository.DriverExist(user);
                 if (driver == null)
                 {
-                    responseBase.ResponseMsg = "Driver is null";
-                    responseBase.ResponseResult = ResponseResult.Warning;
+                    UpdateLocationResponseDTO response = new UpdateLocationResponseDTO()
+                    {
+                        ResponseMsg = "Driver is null",
+                        ResponseResult = ResponseResult.Warning
+                    };
                     logger.LogWarning("Error in UpdateLocation: Driver is null");
-                    return responseBase;
+                    return response;
                 }
                 await driverRepository.UpdateLocation(locationId, driver);
-                responseBase.ResponseMsg = "Location updated successfully";
-                responseBase.ResponseResult = ResponseResult.Success;
-                return responseBase;
+                UpdateLocationResponseDTO responseDto = new UpdateLocationResponseDTO()
+                {
+                    ResponseMsg = "Location updated successfully",
+                    ResponseResult = ResponseResult.Success
+                };
+                return responseDto;
             }
             catch (Exception ex)
             {
                 logger.LogError($"Error in UpdateLocation: {ex.Message}");
-                responseBase.ResponseMsg = $"Error in UpdateLocation: {ex.Message}";
-                responseBase.ResponseResult = ResponseResult.Exception;
-                return responseBase;
+                UpdateLocationResponseDTO responseDto = new UpdateLocationResponseDTO()
+                {
+                    ResponseMsg = $"Error in UpdateLocation: {ex.Message}",
+                    ResponseResult = ResponseResult.Exception
+                };
+                return responseDto;
             }
         }
         #endregion
 
         #region UpdateAvailability
-        public async Task<ResponseBase> UpdateAvailability(bool availability)
+        public async Task<UpdateAvailabilityResponseDTO> UpdateAvailability(UpdateAvailabilityRequestDTO availabilityRequest)
         {
             try
             {
@@ -88,30 +103,45 @@ namespace TaxiBookingService.Logic.Services
                 var user = await userRepository.UserEmailExists(UserEmail);
                 if (user == null)
                 {
-                    responseBase.ResponseMsg = "User is null";
-                    responseBase.ResponseResult = ResponseResult.Warning;
+                    var response = new UpdateAvailabilityResponseDTO()
+                    {
+                        ResponseMsg = "User is null",
+                        ResponseResult = ResponseResult.Warning
+                    };
                     logger.LogError("Error in UpdateLocation: User is null");
-                    return responseBase;
+                    return response;
                 }
                 var driver = await driverRepository.DriverExist(user);
                 if (driver == null)
                 {
-                    responseBase.ResponseMsg = "Driver is null";
-                    responseBase.ResponseResult = ResponseResult.Warning;
+                    var response = new UpdateAvailabilityResponseDTO()
+                    {
+                        ResponseMsg = "Driver is null",
+                        ResponseResult = ResponseResult.Warning
+                    };
                     logger.LogError("Error in UpdateLocation: Driver is null");
-                    return responseBase;
+                    return response;
                 }
+                var availability = availabilityRequest.Available;
                 await driverRepository.UpdateAvailability(availability, driver);
-                responseBase.ResponseMsg = "Availability updated successfully";
-                responseBase.ResponseResult = ResponseResult.Success;
-                return responseBase;
+                var responseDto = new UpdateAvailabilityResponseDTO()
+                {
+                    ResponseMsg = "Availability updates successfully",
+                    ResponseResult = ResponseResult.Success
+                };
+                return responseDto;
             }
             catch (Exception ex)
             {
                 logger.LogError($"Error in UpdateAvailability: {ex.Message}");
+                var response = new UpdateAvailabilityResponseDTO()
+                {
+                    ResponseMsg = $"Error in UpdateAvailability: {ex.Message}",
+                    ResponseResult = ResponseResult.Warning
+                };
                 responseBase.ResponseMsg = $"Error in UpdateAvailability: {ex.Message}";
                 responseBase.ResponseResult = ResponseResult.Exception;
-                return responseBase;
+                return response;
             }
         }
         #endregion

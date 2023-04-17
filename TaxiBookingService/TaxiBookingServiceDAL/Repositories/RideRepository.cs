@@ -25,18 +25,17 @@ namespace TaxiBookingService.DAL.Repositories
         Task<Ride> GetRideById(int rideId);
         Task<Driver> GetDriverById (int driverId);
         Task<CancelReason> GetCancelReason(int cancelReasonId);
+        Task<decimal> GetCancellationFactor();
     }
 
     public class RideRepository : IRideRepository
     {
-        private readonly ILogger<RideRepository> logger;
         private readonly TbsDbContext db;
 
         #region Constructor
-        public RideRepository(TbsDbContext db, ILogger<RideRepository> logger)
+        public RideRepository(TbsDbContext db)
         {
             this.db = db;
-            this.logger = logger;
         }
         #endregion
 
@@ -166,7 +165,8 @@ namespace TaxiBookingService.DAL.Repositories
         public async Task<bool> RideCompleted(User user)
         {
             var customer = await db.Customers.FirstOrDefaultAsync(x => x.UserId == user.Id);
-            var eligible = await (db.Rides.AnyAsync(u => u.CustomerId == customer.Id && (u.StatusId == 1 || u.StatusId == 2 || u.StatusId == 3)));            return eligible;
+            var eligible = await (db.Rides.AnyAsync(u => u.CustomerId == customer.Id && (u.StatusId == 1 || u.StatusId == 2 || u.StatusId == 3)));
+            return eligible;
         }
         #endregion
 
@@ -200,6 +200,14 @@ namespace TaxiBookingService.DAL.Repositories
             var result = await db.Payments.AddAsync(payment);
             await db.SaveChangesAsync();
             return result.Entity;
+        }
+        #endregion
+
+        #region GetCancellationFactor
+        public async Task<decimal> GetCancellationFactor()
+        {
+            var setting = await db.Settings.FirstOrDefaultAsync(s => s.Id == 1);
+            return setting.Value;
         }
         #endregion
     }
