@@ -53,7 +53,7 @@ namespace TaxiBookingService.Controller.Controllers
 
         #region UpdateAvailability
         [HttpPost]
-        public async Task<UpdateAvailabilityResponseDTO> UpdateAvailability(UpdateAvailabilityRequestDTO availability)
+        public async Task<UpdateAvailabilityResponseDTO> UpdateAvailability(bool availability)
         {
             try
             {
@@ -99,12 +99,12 @@ namespace TaxiBookingService.Controller.Controllers
 
         #region RideAccept
         [HttpPost]
-        public async Task<RideAcceptResponseDTO> RideAccept(RideAcceptRequestDTO rideAccept)
+        public async Task<RideAcceptResponseDTO> RideAccept(int rideID, bool accept)
         {
             try
             {
                 logger.LogInformation("RideAccept called");
-                var response = await rideService.DriverRideAccept(rideAccept);
+                var response = await rideService.DriverRideAccept(rideID, accept);
                 return response;
             }
             catch (Exception ex)

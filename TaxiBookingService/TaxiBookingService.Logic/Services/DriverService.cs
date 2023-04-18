@@ -8,7 +8,7 @@ namespace TaxiBookingService.Logic.Services
     public interface IDriverService
     {
         Task<UpdateLocationResponseDTO> UpdateLocation(UpdateLocationRequestDTO updateLocation);
-        Task<UpdateAvailabilityResponseDTO> UpdateAvailability(UpdateAvailabilityRequestDTO availability);
+        Task<UpdateAvailabilityResponseDTO> UpdateAvailability(bool availability);
         Task<BookRideDriverResponseDTO> GetRideRequest();
     }
 
@@ -16,15 +16,17 @@ namespace TaxiBookingService.Logic.Services
     {
         private readonly IDriverRepository driverRepository;
         private readonly IUserRepository userRepository;
+        private readonly IRideRepository rideRepository;
         private readonly IUserService userService;
         private readonly ILogger<DriverService> logger;
         private readonly ResponseBase responseBase;
 
         #region Constructor
-        public DriverService(IDriverRepository driverRepository, IUserRepository userRepository, IUserService userService, ILogger<DriverService> logger)
+        public DriverService(IDriverRepository driverRepository, IUserRepository userRepository, IRideRepository rideRepository, IUserService userService, ILogger<DriverService> logger)
         {
             this.driverRepository = driverRepository;
             this.userRepository = userRepository;
+            this.rideRepository = rideRepository;
             this.userService = userService;
             this.logger = logger;
             responseBase = new ResponseBase();
@@ -62,6 +64,16 @@ namespace TaxiBookingService.Logic.Services
                     return response;
                 }
                 var driver = await driverRepository.DriverExist(user);
+                var ride = await rideRepository.GetDriverRide(driver.Id);
+                if (ride != null)
+                {
+                    var response = new UpdateLocationResponseDTO()
+                    {
+                        ResponseMsg = "Cannot update location when in a ride",
+                        ResponseResult = ResponseResult.Warning
+                    };
+                    return response;
+                }
                 if (driver == null)
                 {
                     UpdateLocationResponseDTO response = new UpdateLocationResponseDTO()
@@ -94,7 +106,7 @@ namespace TaxiBookingService.Logic.Services
         #endregion
 
         #region UpdateAvailability
-        public async Task<UpdateAvailabilityResponseDTO> UpdateAvailability(UpdateAvailabilityRequestDTO availabilityRequest)
+        public async Task<UpdateAvailabilityResponseDTO> UpdateAvailability(bool availabilityRequest)
         {
             try
             {
@@ -112,6 +124,16 @@ namespace TaxiBookingService.Logic.Services
                     return response;
                 }
                 var driver = await driverRepository.DriverExist(user);
+                var ride = await rideRepository.GetDriverRide(driver.Id);
+                if (ride != null)
+                {
+                    var response = new UpdateAvailabilityResponseDTO()
+                    {
+                        ResponseMsg = "Cannot update availability when in a ride",
+                        ResponseResult = ResponseResult.Warning
+                    };
+                    return response;
+                }
                 if (driver == null)
                 {
                     var response = new UpdateAvailabilityResponseDTO()
@@ -122,8 +144,7 @@ namespace TaxiBookingService.Logic.Services
                     logger.LogError("Error in UpdateLocation: Driver is null");
                     return response;
                 }
-                var availability = availabilityRequest.Available;
-                await driverRepository.UpdateAvailability(availability, driver);
+                await driverRepository.UpdateAvailability(availabilityRequest, driver);
                 var responseDto = new UpdateAvailabilityResponseDTO()
                 {
                     ResponseMsg = "Availability updates successfully",
@@ -173,7 +194,7 @@ namespace TaxiBookingService.Logic.Services
                     logger.LogWarning("No user available");
                     return rideResponse;
                 }
-                var driver = driverRepository.DriverExist(user);
+                var driver = await driverRepository.DriverExist(user);
                 if(driver == null)
                 {
                     BookRideDriverResponseDTO rideResponse = new BookRideDriverResponseDTO()

@@ -12,7 +12,7 @@ namespace TaxiBookingService.Logic.Services
         double CalculateDistance(decimal latitude1, decimal longitude1, decimal latitude2, decimal longitude2);
         Task<BookRideResponseDTO> BookRide(BookRideRequestDTO rideRequest);
         Task<CustomerViewRideResponseDTO> CustomerViewRideStatus();
-        Task<RideAcceptResponseDTO> DriverRideAccept(RideAcceptRequestDTO rideAccept);
+        Task<RideAcceptResponseDTO> DriverRideAccept(int rideID, bool accept);
         Task<DriverViewRideResponseDTO> DriverViewRideRequest();
         Task<RideStartedResponseDTO> RideStarted(RideIdRequestDTO rideStarted);
         Task<RideCompleteResponseDTO> RideCompleted(RideIdRequestDTO rideCompleted);
@@ -91,6 +91,40 @@ namespace TaxiBookingService.Logic.Services
                     logger.LogWarning("One customer can book only one ride at a time");
                     return response;
                 }
+                var pickup = await userRepository.LocationExists(rideRequest.PickupLocationId);
+                var drop = await userRepository.LocationExists (rideRequest.DropLocationId);
+                if(pickup ==null)
+                {
+                    BookRideResponseDTO response = new BookRideResponseDTO()
+                    {
+                        ResponseMsg = "Invalid pickup location",
+                        ResponseResult = ResponseResult.Warning
+                    };
+                    logger.LogWarning("Invalid pickup location");
+                    return response;
+                }
+                if(drop == null)
+                {
+                    BookRideResponseDTO response = new BookRideResponseDTO()
+                    {
+                        ResponseMsg = "Invalid drop location",
+                        ResponseResult = ResponseResult.Warning
+                    };
+                    logger.LogWarning("Invalid drop location");
+                    return response;
+                }
+                var pickupArea = await userRepository.AreaExists(pickup.AreaId);
+                var dropArea = await userRepository.AreaExists(drop.AreaId);
+                if(pickupArea.CityId != dropArea.CityId)
+                {
+                    BookRideResponseDTO response = new BookRideResponseDTO()
+                    {
+                        ResponseMsg = "Pickup location and drop location should be in the same city",
+                        ResponseResult = ResponseResult.Warning
+                    };
+                    logger.LogWarning("Pickup location and drop location should be in the same city");
+                    return response;
+                }
                 if (rideRequest.PickupLocationId == rideRequest.DropLocationId)
                 {
                     BookRideResponseDTO response = new BookRideResponseDTO()
@@ -100,9 +134,7 @@ namespace TaxiBookingService.Logic.Services
                     };
                     logger.LogWarning("Both pickup location and drop location cannot be the same");
                     return response;
-                }
-                var pickup = await rideRepository.GetLocation(rideRequest.PickupLocationId);
-                var drop = await rideRepository.GetLocation(rideRequest.DropLocationId);
+                }                
                 var vehicleType = await rideRepository.GetVehicleType(rideRequest.VehicleTypeId);
                 if (pickup == null)
                 {
@@ -231,12 +263,10 @@ namespace TaxiBookingService.Logic.Services
         #endregion
 
         #region DriverRideAccept
-        public async Task<RideAcceptResponseDTO> DriverRideAccept(RideAcceptRequestDTO rideAccept)
+        public async Task<RideAcceptResponseDTO> DriverRideAccept(int rideID, bool accept)
         {
             try
             {
-                var rideID = rideAccept.RideId;
-                var accept = rideAccept.Accept;
                 var email = userService.GetCurrentUser();
                 var user = await userRepository.UserEmailExists(email.Email);
                 var driver = await driverRepository.DriverExist(user);
@@ -332,7 +362,7 @@ namespace TaxiBookingService.Logic.Services
             {
                 var email = userService.GetCurrentUser();
                 var user = await userRepository.UserEmailExists(email.Email);
-                var driver = driverRepository.DriverExist(user);
+                var driver = await driverRepository.DriverExist(user);
                 var ride = await rideRepository.GetDriverRide(driver.Id);
                 if (ride == null)
                 {
@@ -373,7 +403,7 @@ namespace TaxiBookingService.Logic.Services
                 int rideId = rideStarted.RideId;
                 var email = userService.GetCurrentUser();
                 var user = await userRepository.UserEmailExists(email.Email);
-                var driver = driverRepository.DriverExist(user);
+                var driver = await driverRepository.DriverExist(user);
                 var ride = await rideRepository.GetDriverLatestRide(driver.Id, rideId);
                 if (ride == null)
                 {
@@ -416,8 +446,7 @@ namespace TaxiBookingService.Logic.Services
                 var email = userService.GetCurrentUser();
                 var user = await userRepository.UserEmailExists(email.Email);
                 var driver = await driverRepository.DriverExist(user);
-                var ride = await rideRepository.GetDriverRideForComplete(driver.Id, rideId);
-                var customer = await rideRepository.GetCustomerByID(ride.CustomerId);
+                var ride = await rideRepository.GetDriverRideForComplete(driver.Id, rideId);                
                 if (ride == null)
                 {
                     RideCompleteResponseDTO responseDto = new RideCompleteResponseDTO()
@@ -427,6 +456,7 @@ namespace TaxiBookingService.Logic.Services
                     };
                     return responseDto;
                 }
+                var customer = await rideRepository.GetCustomerByID(ride.CustomerId);
                 ride.StatusId = 4;
                 ride.DropTime = DateTime.Now;
                 ride.Duration = DateTime.Now.Subtract((DateTime)ride.PickUpTime);
@@ -453,10 +483,10 @@ namespace TaxiBookingService.Logic.Services
             }
             catch (Exception ex)
             {
-                logger.LogError($"Error in RideStarted: {ex.Message}");
+                logger.LogError($"Error in RideCompleted: {ex.Message}");
                 RideCompleteResponseDTO response = new RideCompleteResponseDTO()
                 {
-                    ResponseMsg = $"Error in RideStarted: {ex.Message}",
+                    ResponseMsg = $"Error in RideCompleted: {ex.Message}",
                     ResponseResult = ResponseResult.Exception
                 };
                 return response;
@@ -640,8 +670,8 @@ namespace TaxiBookingService.Logic.Services
                     await rideRepository.UpdateRide(ride);
                     RatingResponseDTO responseDto = new RatingResponseDTO()
                     {
-                        ResponseMsg = "Ratong added successfully",
-                        ResponseResult = ResponseResult.Warning
+                        ResponseMsg = "Rating added successfully",
+                        ResponseResult = ResponseResult.Success
                     };
                     return responseDto;
                 }

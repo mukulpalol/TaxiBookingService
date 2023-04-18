@@ -75,7 +75,7 @@ namespace TaxiBookingService.Logic.Services
                     Email = customerAdd.Email,
                     Password = customerAdd.Password,
                     Dob = customerAdd.Dob,
-                    Gender = customerAdd.Gender,
+                    Gender = customerAdd.Gender.ToLower(),
                     PhoneNumber = customerAdd.PhoneNumber,
                     RoleId = 2
                 };
@@ -160,7 +160,7 @@ namespace TaxiBookingService.Logic.Services
                     Email = driverAdd.Email,
                     Password = driverAdd.Password,
                     Dob = driverAdd.Dob,
-                    Gender = driverAdd.Gender,
+                    Gender = driverAdd.Gender.ToLower(),
                     PhoneNumber = driverAdd.PhoneNumber,
                     RoleId = 3
                 };

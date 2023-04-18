@@ -140,7 +140,7 @@ namespace TaxiBookingService.DAL.Repositories
         #region GetDriverLatestRideForComplete
         public async Task<Ride> GetDriverRideForComplete(int driverID, int rideId)
         {
-            var ride = await db.Rides.Where(r => r.Id == rideId && r.DriverId == driverID && r.StatusId == 3).FirstOrDefaultAsync();
+            var ride = await db.Rides.FirstOrDefaultAsync(r => r.Id == rideId && r.DriverId == driverID && r.StatusId == 3);
             return ride;
         }
         #endregion

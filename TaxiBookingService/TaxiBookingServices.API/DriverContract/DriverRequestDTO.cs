@@ -20,7 +20,7 @@ namespace TaxiBookingServices.API.DriverContract
     public class UpdateAvailabilityRequestDTO
     {
         [Required]
-        [RegularExpression("^([t][r][u][e]|[f][a][l][s][e])", ErrorMessage = "Enter valid availability")]
+        [RegularExpression("^[t][r][u][e]|[f][a][l][s][e]", ErrorMessage = "Enter valid availability")]
         public bool Available { get; set; }
     }
     #endregion

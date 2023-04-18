@@ -10,6 +10,7 @@ namespace TaxiBookingService.DAL.Repositories
         Task<User> UserPhoneExists(string phone);
         Task<Vehicle> VehicleExists(string vehicleNumber);
         Task<Location> LocationExists(int locationId);
+        Task<Area> AreaExists(int areaId);
         Task<Customer> CustomerExist(User user);
         Task AddCustomer(User user, Customer customer);
         Task AddDriver(Vehicle vehicle, User user, Driver driver);
@@ -54,6 +55,14 @@ namespace TaxiBookingService.DAL.Repositories
         {
             var location = await db.Locations.FirstOrDefaultAsync(x => x.Id == locationId);
             return location;
+        }
+        #endregion
+
+        #region AreaExists
+        public async Task<Area> AreaExists(int areaId)
+        {
+            var area = await db.Areas.FirstOrDefaultAsync(x => x.Id == areaId);
+            return area;
         }
         #endregion
 
