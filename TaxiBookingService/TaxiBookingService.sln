@@ -1,0 +1,75 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33516.290
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaxiBookingService.Host", "TaxiBookingServiceAPI\TaxiBookingService.Host.csproj", "{885ADB62-74C0-49BD-9DD8-9A7318A613E5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "10 API", "10 API", "{D45C3432-226A-47C3-8FA6-A6136D838B0A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "20 DAL", "20 DAL", "{2FC1587A-65AE-43DD-9C6E-13F2D6A309AE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "30 Logic", "30 Logic", "{F086754B-545E-4114-84A5-E7F914179762}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "40 Controller", "40 Controller", "{4AAD3264-4614-4203-86D9-57CAFC71F3CB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "50 Host", "50 Host", "{EEFF9D85-02A0-4754-85EC-522FD04152B4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaxiBookingService.DAL", "TaxiBookingServiceDAL\TaxiBookingService.DAL.csproj", "{BA26AEA5-6DEA-49C3-A024-AFB02EA9A616}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaxiBookingServices.API", "TaxiBookingServices.API\TaxiBookingServices.API.csproj", "{0B2ACDE9-F06F-4DF9-A04C-B43F04C0D58B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaxiBookingService.Logic", "TaxiBookingService.Logic\TaxiBookingService.Logic.csproj", "{5EC22482-9C1C-41EE-806B-A398E3495492}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaxiBookingService.Controller", "TaxiBookingService.Controller\TaxiBookingService.Controller.csproj", "{CEDCF571-1C02-4BAC-A0E4-B56A097F5AC2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "05 Common", "05 Common", "{B23493EF-C349-4F2C-BBB9-1828FC2705EA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaxiBookingService.Common", "TaxiBookingService.Common\TaxiBookingService.Common.csproj", "{0E433D6E-558C-4C32-B14D-0EE8FD587FF7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{885ADB62-74C0-49BD-9DD8-9A7318A613E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{885ADB62-74C0-49BD-9DD8-9A7318A613E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{885ADB62-74C0-49BD-9DD8-9A7318A613E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{885ADB62-74C0-49BD-9DD8-9A7318A613E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA26AEA5-6DEA-49C3-A024-AFB02EA9A616}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA26AEA5-6DEA-49C3-A024-AFB02EA9A616}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA26AEA5-6DEA-49C3-A024-AFB02EA9A616}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA26AEA5-6DEA-49C3-A024-AFB02EA9A616}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B2ACDE9-F06F-4DF9-A04C-B43F04C0D58B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B2ACDE9-F06F-4DF9-A04C-B43F04C0D58B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B2ACDE9-F06F-4DF9-A04C-B43F04C0D58B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B2ACDE9-F06F-4DF9-A04C-B43F04C0D58B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EC22482-9C1C-41EE-806B-A398E3495492}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EC22482-9C1C-41EE-806B-A398E3495492}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EC22482-9C1C-41EE-806B-A398E3495492}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EC22482-9C1C-41EE-806B-A398E3495492}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEDCF571-1C02-4BAC-A0E4-B56A097F5AC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEDCF571-1C02-4BAC-A0E4-B56A097F5AC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEDCF571-1C02-4BAC-A0E4-B56A097F5AC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEDCF571-1C02-4BAC-A0E4-B56A097F5AC2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E433D6E-558C-4C32-B14D-0EE8FD587FF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E433D6E-558C-4C32-B14D-0EE8FD587FF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E433D6E-558C-4C32-B14D-0EE8FD587FF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E433D6E-558C-4C32-B14D-0EE8FD587FF7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{885ADB62-74C0-49BD-9DD8-9A7318A613E5} = {EEFF9D85-02A0-4754-85EC-522FD04152B4}
+		{BA26AEA5-6DEA-49C3-A024-AFB02EA9A616} = {2FC1587A-65AE-43DD-9C6E-13F2D6A309AE}
+		{0B2ACDE9-F06F-4DF9-A04C-B43F04C0D58B} = {D45C3432-226A-47C3-8FA6-A6136D838B0A}
+		{5EC22482-9C1C-41EE-806B-A398E3495492} = {F086754B-545E-4114-84A5-E7F914179762}
+		{CEDCF571-1C02-4BAC-A0E4-B56A097F5AC2} = {4AAD3264-4614-4203-86D9-57CAFC71F3CB}
+		{0E433D6E-558C-4C32-B14D-0EE8FD587FF7} = {B23493EF-C349-4F2C-BBB9-1828FC2705EA}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {86807CB0-898E-4C7F-BA54-57FF5B34F2A4}
+	EndGlobalSection
+EndGlobal
