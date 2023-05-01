@@ -1,20 +1,15 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using System.Globalization;
 using System.Security.Claims;
 using TaxiBookingService.Common;
 using TaxiBookingService.DAL.Models;
-using TaxiBookingService.DAL.Repositories;
-using TaxiBookingServices.API.LoginContract;
+using TaxiBookingService.DAL.RepositoriesContract;
+using TaxiBookingService.Logic.ServicesContract;
+using TaxiBookingServices.API.Auth.AuthServiceContract;
 
 namespace TaxiBookingService.Logic.Services
 {
-    public interface IUserService
-    {
-        Task<SignUpResponseDTO> AddCustomer(CustomerAddDTO customerAdd);
-        Task<SignUpResponseDTO> AddDriver(DriverAddDTO driverAdd);
-        ClaimResponseDTO GetCurrentUser();
-    }
-
     public class UserService : IUserService
     {
         private readonly IUserRepository userRepository;
@@ -38,46 +33,22 @@ namespace TaxiBookingService.Logic.Services
         {
             try
             {
-                if (customerAdd == null)
-                {
-                    SignUpResponseDTO response = new SignUpResponseDTO()
-                    {
-                        ResponseMsg = "Null input",
-                        ResponseResult = ResponseResult.Warning
-                    };
-                    logger.LogWarning("Error in AddCustomer: Null Input");
-                    return response;
-                }
-                if (await userRepository.UserEmailExists(customerAdd.Email) != null)
-                {
-                    SignUpResponseDTO response = new SignUpResponseDTO()
-                    {
-                        ResponseMsg = "Customer with this email already exists",
-                        ResponseResult = ResponseResult.Warning
-                    };
-                    logger.LogWarning("Error in AddCustomer: Customer with this email already exists");
-                    return response;
-                }
-                if (await userRepository.UserPhoneExists(customerAdd.PhoneNumber) != null)
-                {
-                    SignUpResponseDTO response = new SignUpResponseDTO()
-                    {
-                        ResponseMsg = "Customer with this phone number already exists",
-                        ResponseResult = ResponseResult.Warning
-                    };
-                    logger.LogWarning("Error in AddCustomer: Customer with this phone number already exists");
-                    return response;
-                }
+                customerAdd = CheckValidation.NullCheck(customerAdd, "Null input");
+                var userEmailCheck = await userRepository.UserEmailExists(customerAdd.User.Email);
+                userEmailCheck = CheckValidation.NotNullCheck(userEmailCheck, "Customer with this email already exists");
+                var userPhoneCheck = await userRepository.UserPhoneExists(customerAdd.User.PhoneNumber);
+                userPhoneCheck = CheckValidation.NotNullCheck(userPhoneCheck, "Customer with this phone number already exists");
+                DateTime dt = DateTime.ParseExact(customerAdd.User.Dob, "yyyy-MM-dd", CultureInfo.InvariantCulture);
                 User user = new()
                 {
-                    FirstName = customerAdd.FirstName,
-                    LastName = customerAdd.LastName,
-                    Email = customerAdd.Email,
-                    Password = customerAdd.Password,
-                    Dob = customerAdd.Dob,
-                    Gender = customerAdd.Gender.ToLower(),
-                    PhoneNumber = customerAdd.PhoneNumber,
-                    RoleId = 2
+                    FirstName = customerAdd.User.FirstName,
+                    LastName = customerAdd.User.LastName,
+                    Email = customerAdd.User.Email.ToLower(),
+                    Password = customerAdd.User.Password,
+                    Dob = dt,
+                    Gender = customerAdd.User.Gender.ToLower(),
+                    PhoneNumber = customerAdd.User.PhoneNumber,
+                    RoleId = (int)RoleEnum.Customer
                 };
                 Customer customer = new Customer()
                 {
@@ -87,82 +58,51 @@ namespace TaxiBookingService.Logic.Services
                     TotalRides = 0
                 };
                 await userRepository.AddCustomer(user, customer);
-                SignUpResponseDTO responseDTO = new SignUpResponseDTO()
-                {
-                    ResponseMsg = "Customer added successfully",
-                    ResponseResult = ResponseResult.Success
-                };
-                return responseDTO;
+                responseBase.ResponseMsg = "Customer added successfully";
+                responseBase.ResponseResult = ResponseResult.Success;
+                return responseBase;
             }
             catch (Exception ex)
             {
                 logger.LogError($"Error in AddCustomer: {ex.Message}");
-                SignUpResponseDTO response = new SignUpResponseDTO()
-                {
-                    ResponseMsg = $"Error in AddCustomer: {ex.Message}",
-                    ResponseResult = ResponseResult.Exception
-                };
-                return response;
+                responseBase.ResponseMsg = $"Error in AddCustomer: {ex.Message}";
+                responseBase.ResponseResult = ResponseResult.Exception;
+                return responseBase;
             }
         }
         #endregion
-
+        
         #region AddDriver
         public async Task<SignUpResponseDTO> AddDriver(DriverAddDTO driverAdd)
         {
             try
             {
-                if (driverAdd == null)
-                {
-                    responseBase.ResponseMsg = "Null input";
-                    responseBase.ResponseResult = ResponseResult.Warning;                    
-                    logger.LogWarning("Error in AddCustomer: Null Input");
-                    return responseBase;
-                }
-                if (await userRepository.UserEmailExists(driverAdd.Email) != null)
-                {
-                    responseBase.ResponseMsg = "Driver with this email already exists";
-                    responseBase.ResponseResult = ResponseResult.Warning;
-                    logger.LogWarning("Error in AddDriver: Driver with this email already exists");
-                    return responseBase;
-                }
-                if (await userRepository.UserPhoneExists(driverAdd.PhoneNumber) != null)
-                {
-                    responseBase.ResponseMsg = "Driver with this phone number already exists";
-                    responseBase.ResponseResult = ResponseResult.Warning;
-                    logger.LogWarning("Error in AddDriver: Driver with this phone number already exists");
-                    return responseBase;
-                }
-                if (await userRepository.VehicleExists(driverAdd.VehicleNumber) != null)
-                {
-                    responseBase.ResponseMsg = "Vehicle with this vehicle number already exists";
-                    responseBase.ResponseResult = ResponseResult.Warning;
-                    logger.LogWarning("Error in AddDriver: Vehicle with this vehicle number already exists");
-                    return responseBase;
-                }
-                if (await userRepository.LocationExists(driverAdd.LocationId) == null)
-                {
-                    responseBase.ResponseMsg = "LocationId invalid";
-                    responseBase.ResponseResult = ResponseResult.Warning;
-                    logger.LogWarning("Error in AddDriver: LocationId invalid");
-                    return responseBase;
-                }
+                driverAdd = CheckValidation.NullCheck(driverAdd, "Null Input");
+                var userEmailCheck = await userRepository.UserEmailExists(driverAdd.User.Email);
+                userEmailCheck = CheckValidation.NotNullCheck(userEmailCheck, "Driver with this email already exists");
+                var userPhoneCheck = await userRepository.UserPhoneExists(driverAdd.User.PhoneNumber);
+                userPhoneCheck = CheckValidation.NotNullCheck(userPhoneCheck, "Driver with this phone number already exists");
+                var vehicleCheck = await userRepository.VehicleExists(driverAdd.VehicleNumber);
+                vehicleCheck = CheckValidation.NotNullCheck(vehicleCheck, "Vehicle with this vehicle number already exists");
+                var locationCheck = await userRepository.LocationExists(driverAdd.LocationId);
+                locationCheck = CheckValidation.NullCheck(locationCheck, "Invalid location");                
                 Vehicle vehicle = new Vehicle()
                 {
                     VehicleNumber = driverAdd.VehicleNumber,
                     VehicleTypeId = driverAdd.VehicleTypeId,
                     ModelName = driverAdd.ModelName
                 };
+                DateTime dt = DateTime.ParseExact(driverAdd.User.Dob, "yyyy-MM-dd", CultureInfo.InvariantCulture);
                 User user = new User()
                 {
-                    FirstName = driverAdd.FirstName,
-                    LastName = driverAdd.LastName,
-                    Email = driverAdd.Email,
-                    Password = driverAdd.Password,
-                    Dob = driverAdd.Dob,
-                    Gender = driverAdd.Gender.ToLower(),
-                    PhoneNumber = driverAdd.PhoneNumber,
-                    RoleId = 3
+                    FirstName = driverAdd.User.FirstName,
+                    LastName = driverAdd.User.LastName,
+                    Email = driverAdd.User.Email.ToLower(),
+                    Password = driverAdd.User.Password,
+                    Dob = dt,
+                    Gender = driverAdd.User.Gender.ToLower(),
+                    PhoneNumber = driverAdd.User.PhoneNumber,
+                    RoleId = (int)RoleEnum.Driver
                 };
                 Driver driver = new Driver()
                 {
@@ -186,44 +126,36 @@ namespace TaxiBookingService.Logic.Services
                 return responseBase;
             }
         }
-        #endregion
+        #endregion       
 
         #region GetCurrentUser
         public ClaimResponseDTO GetCurrentUser()
         {
+            ClaimResponseDTO claimResponse = new ClaimResponseDTO();
             try
             {
                 var identity = httpContext.HttpContext.User.Identity as ClaimsIdentity;
                 if (identity == null)
                 {
-                    ClaimResponseDTO claimResponseDTO = new ClaimResponseDTO()
-                    {
-                        ResponseMsg = "ClaimsIdentity is null",
-                        ResponseResult = ResponseResult.Warning
-                    };
+                    claimResponse.ResponseMsg = "ClaimsIdentity is null";
+                    claimResponse.ResponseResult = ResponseResult.Warning;
                     logger.LogWarning("Error in GetCurrentUser: ClaimsIdentity is null");
-                    return claimResponseDTO;
+                    return claimResponse;
                 }
                 var userClaims = identity.Claims;
                 string UserEmail = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Email)?.Value;
-                ClaimResponseDTO claimResponse = new ClaimResponseDTO()
-                {
-                    Email = UserEmail,
-                    ResponseResult = ResponseResult.Success
-                };
+                claimResponse.Email = UserEmail;
+                claimResponse.ResponseResult = ResponseResult.Success;
                 return claimResponse;
             }
             catch (Exception ex)
             {
-                ClaimResponseDTO claimResponseDTO = new ClaimResponseDTO()
-                {
-                    ResponseMsg = $"{ex.Message}",
-                    ResponseResult = ResponseResult.Exception
-                };
+                claimResponse.ResponseMsg = $"{ex.Message}";
+                claimResponse.ResponseResult = ResponseResult.Exception;
                 logger.LogError($"Error in GetCurrentUser: {ex.Message}");
-                return claimResponseDTO;
+                return claimResponse;
             }
         }
-        #endregion
+        #endregion        
     }
 }

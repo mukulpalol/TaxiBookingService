@@ -1,18 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TaxiBookingService.DAL.Models;
-using TaxiBookingServices.API.LoginContract;
+using TaxiBookingService.DAL.RepositoriesContract;
+using TaxiBookingServices.API.Auth.AuthServiceContract;
 
 namespace TaxiBookingService.DAL.Repositories
 {
-    public interface IAuthRepository
-    {
-        Task<User> UserExist(LoginRequestDTO userLogin);
-        Task<User> GetUser(string Email);
-        Task<User> EmailExist(LoginRequestDTO userLogin);
-        Task<Role> GetRole(int roleId);
-    }
-
     public class AuthRepository : IAuthRepository
     {
         private readonly TbsDbContext db;

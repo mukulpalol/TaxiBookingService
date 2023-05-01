@@ -29,7 +29,8 @@ namespace TaxiBookingService.DAL
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Setting>().HasData(
-                new Setting { Id = 1, SettingName = "CancellationFactor", Value = 0.05M });
+                new Setting { Id = 1, SettingName = "CancellationFactor", Value = 0.05M },
+                new Setting { Id = 2, SettingName = "DriverRange", Value = 2.5M});
 
             modelBuilder.Entity<State>().HasData(
                 new State { Id = 1, Name = "Karnataka" },
@@ -51,15 +52,22 @@ namespace TaxiBookingService.DAL
                 new Area { Id = 2, Name = "Sirsi Road", CityId = 3 },
                 new Area { Id = 3, Name = "Jagatpura", CityId = 3 },
                 new Area { Id = 4, Name = "Pratap Nagar", CityId = 4 },
-                new Area { Id = 5, Name = "Ganpati Nagar", CityId = 4 }
+                new Area { Id = 5, Name = "Ganpati Nagar", CityId = 4 },
+                new Area { Id = 6, Name = "Vaishali Nagar", CityId = 3},
+                new Area { Id = 7, Name = "Sanganer", CityId = 3}
                 );
 
             modelBuilder.Entity<Location>().HasData(
                 new Location { Id = 1, StreetName = "39 Sector 2 Road", Latitude = 26.955022M, Longitude = 75.773914M, AreaId = 1 },
-                new Location { Id = 2, StreetName = "RIICO Industrial Area", Latitude = 26.927076M, Longitude = 75.702112M, AreaId = 2 },
+                new Location { Id = 2, StreetName = "InTimeTec RIICO Industrial Area", Latitude = 26.927076M, Longitude = 75.702112M, AreaId = 2 },
                 new Location { Id = 3, StreetName = "Ram Nagariya Road", Latitude = 26.822239M, Longitude = 75.864820M, AreaId = 3 },
                 new Location { Id = 4, StreetName = "B4 Central Spine Road", Latitude = 26.967003M, Longitude = 75.782395M, AreaId = 1 },
-                new Location { Id = 5, StreetName = "6 Dhaka Nagar", Latitude = 26.924471M, Longitude = 75.697313M, AreaId = 2 }
+                new Location { Id = 5, StreetName = "6 Dhaka Nagar", Latitude = 26.924471M, Longitude = 75.697313M, AreaId = 2 },
+                new Location { Id = 6, StreetName = "Vaishali Marg Block C", Latitude = 26.914442M, Longitude = 75.738313M, AreaId = 6 },
+                new Location { Id = 7, StreetName = "RPA Road Sector 4", Latitude = 26.954195M, Longitude = 75.784245M, AreaId = 1 },
+                new Location { Id = 8, StreetName = "Gandhi Path Block B", Latitude = 26.906310M, Longitude = 75.735119M, AreaId = 6 },
+                new Location { Id = 9, StreetName = "Airport Road Surajpura", Latitude = 26.829775M, Longitude = 75.805197M, AreaId = 7 },
+                new Location { Id = 10, StreetName = "Amrapali Marg E block", Latitude = 26.912616M, Longitude = 75.743459M, AreaId = 6 }
                 );
 
             modelBuilder.Entity<VehicleType>().HasData(
@@ -78,7 +86,7 @@ namespace TaxiBookingService.DAL
                 new CancelReason { Id = 1, CancelReasons = "Driver denied duty", ValidReason = true },
                 new CancelReason { Id = 2, CancelReasons = "Entered wrong drop location", ValidReason = true },
                 new CancelReason { Id = 3, CancelReasons = "Driver arrived too early", ValidReason = false },
-                new CancelReason { Id = 4, CancelReasons = "Change of plans", ValidReason = false }
+                new CancelReason { Id = 4, CancelReasons = "Change of plans", ValidReason = false }                
                 );
 
             modelBuilder.Entity<Status>().HasData(

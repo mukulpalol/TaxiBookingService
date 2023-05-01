@@ -1,18 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TaxiBookingService.DAL.Models;
+using TaxiBookingService.DAL.RepositoriesContract;
 
 namespace TaxiBookingService.DAL.Repositories
 {
-    public interface IDriverRepository
-    {
-        Task<Driver> DriverExist(User user);
-        Task<Vehicle> VehicleByDriverId(Driver driver);
-        Task UpdateLocation(int locationId, Driver driver);
-        Task UpdateAvailability(bool availability, Driver driver);
-        Task<Ride> GetRideByDriver(int driverId);
-    }
-
     public class DriverRepository : IDriverRepository
     {
         private readonly TbsDbContext db;
@@ -61,6 +53,14 @@ namespace TaxiBookingService.DAL.Repositories
         public async Task<Ride> GetRideByDriver(int driverId)
         {
             return await db.Rides.FirstOrDefaultAsync(r => r.DriverId == driverId);
+        }
+        #endregion
+
+        #region GetDriverByID
+        public async Task<Driver> GetDriverById(int driverId)
+        {
+            var driver = await db.Drivers.FirstOrDefaultAsync(d => d.Id == driverId);
+            return driver;
         }
         #endregion
     }

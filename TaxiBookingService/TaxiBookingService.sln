@@ -25,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaxiBookingService.Controll
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "05 Common", "05 Common", "{B23493EF-C349-4F2C-BBB9-1828FC2705EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaxiBookingService.Common", "TaxiBookingService.Common\TaxiBookingService.Common.csproj", "{0E433D6E-558C-4C32-B14D-0EE8FD587FF7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaxiBookingService.Common", "TaxiBookingService.Common\TaxiBookingService.Common.csproj", "{0E433D6E-558C-4C32-B14D-0EE8FD587FF7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

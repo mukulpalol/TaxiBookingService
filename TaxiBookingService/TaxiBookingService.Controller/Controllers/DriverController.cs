@@ -3,8 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TaxiBookingService.Common;
 using TaxiBookingService.Logic.Services;
-using TaxiBookingServices.API.CustomerContract;
-using TaxiBookingServices.API.DriverContract;
+using TaxiBookingService.Logic.ServicesContract;
+using TaxiBookingServices.API.Customer.CustomerServiceContract;
+using TaxiBookingServices.API.Driver.DriverServiceContract;
 
 namespace TaxiBookingService.Controller.Controllers
 {
@@ -13,7 +14,6 @@ namespace TaxiBookingService.Controller.Controllers
     [Authorize(Roles = "Driver")]
     public class DriverController : ControllerBase
     {
-        private readonly ResponseBase responseBase;
         private readonly IDriverService driverService;
         private readonly IRideService rideService;
         private readonly ILogger<DriverController> logger;
@@ -21,10 +21,32 @@ namespace TaxiBookingService.Controller.Controllers
         #region Constructor
         public DriverController(IDriverService driverService, IRideService rideService, ILogger<DriverController> logger)
         {
-            responseBase = new ResponseBase();
             this.driverService = driverService;
             this.rideService = rideService;
             this.logger = logger;
+        }
+        #endregion
+
+        #region GetRideRequest
+        [HttpGet]
+        public async Task<DriverViewRideResponseDTO> GetRideRequest()
+        {
+            try
+            {
+                logger.LogInformation("GetRideRequest called");
+                var response = await rideService.DriverViewRideRequest();
+                return response;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Error in GetRideRequest: {ex.Message}");
+                DriverViewRideResponseDTO response = new DriverViewRideResponseDTO()
+                {
+                    ResponseMsg = $"Error in GetRideRequest: {ex.Message}",
+                    ResponseResult = ResponseResult.Exception
+                };
+                return response;
+            }
         }
         #endregion
 
@@ -73,30 +95,7 @@ namespace TaxiBookingService.Controller.Controllers
             }
         }
         #endregion
-
-        #region GetRideRequest
-        [HttpGet]
-        public async Task<DriverViewRideResponseDTO> GetRideRequest()
-        {
-            try
-            {
-                logger.LogInformation("GetRideRequest called");
-                var response = await rideService.DriverViewRideRequest();
-                return response;
-            }
-            catch (Exception ex)
-            {
-                logger.LogError($"Error in GetRideRequest: {ex.Message}");
-                DriverViewRideResponseDTO response = new DriverViewRideResponseDTO()
-                {
-                    ResponseMsg = $"Error in GetRideRequest: {ex.Message}",
-                    ResponseResult = ResponseResult.Exception
-                };
-                return response;
-            }
-        }
-        #endregion
-
+        
         #region RideAccept
         [HttpPost]
         public async Task<RideAcceptResponseDTO> RideAccept(int rideID, bool accept)
@@ -173,7 +172,7 @@ namespace TaxiBookingService.Controller.Controllers
             try
             {
                 logger.LogInformation("SubmitRating called");
-                var response = await rideService.SubmitRating(submitRatingRequest);
+                var response = await rideService.DriverSubmitRating(submitRatingRequest);
                 return response;
             }
             catch (Exception ex)

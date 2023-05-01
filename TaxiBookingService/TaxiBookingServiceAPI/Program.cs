@@ -5,7 +5,9 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using TaxiBookingService.DAL;
 using TaxiBookingService.DAL.Repositories;
+using TaxiBookingService.DAL.RepositoriesContract;
 using TaxiBookingService.Logic.Services;
+using TaxiBookingService.Logic.ServicesContract;
 
 namespace TaxiBookingService.Host
 {
@@ -95,14 +97,17 @@ namespace TaxiBookingService.Host
                 options.IdleTimeout = TimeSpan.FromMinutes(15);
             });
 
-            builder.Services.AddScoped<IUserService, UserService>();
-            builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IAuthService, AuthService>();
-            builder.Services.AddScoped<IAuthRepository, AuthRepository>();
             builder.Services.AddScoped<IDriverService, DriverService>();
-            builder.Services.AddScoped<IDriverRepository, DriverRepository>();
             builder.Services.AddScoped<IRideService, RideService>();
+            builder.Services.AddScoped<IUserService, UserService>();            
+            
+            builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+            builder.Services.AddScoped<ICancelRepository, CancelRepository>();
+            builder.Services.AddScoped<IDriverRepository, DriverRepository>();
             builder.Services.AddScoped<IRideRepository, RideRepository>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();                        
 
             var app = builder.Build();
 

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TaxiBookingService.DAL;
 
@@ -11,9 +12,10 @@ using TaxiBookingService.DAL;
 namespace TaxiBookingService.Host.Migrations
 {
     [DbContext(typeof(TbsDbContext))]
-    partial class TbsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230419161850_UpdatedRide")]
+    partial class UpdatedRide
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -81,20 +83,6 @@ namespace TaxiBookingService.Host.Migrations
                             CityId = 4,
                             Deleted = false,
                             Name = "Ganpati Nagar"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            CityId = 3,
-                            Deleted = false,
-                            Name = "Vaishali Nagar"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            CityId = 3,
-                            Deleted = false,
-                            Name = "Sanganer"
                         });
                 });
 
@@ -334,7 +322,7 @@ namespace TaxiBookingService.Host.Migrations
                             Deleted = false,
                             Latitude = 26.927076m,
                             Longitude = 75.702112m,
-                            StreetName = "InTimeTec RIICO Industrial Area"
+                            StreetName = "RIICO Industrial Area"
                         },
                         new
                         {
@@ -362,51 +350,6 @@ namespace TaxiBookingService.Host.Migrations
                             Latitude = 26.924471m,
                             Longitude = 75.697313m,
                             StreetName = "6 Dhaka Nagar"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            AreaId = 6,
-                            Deleted = false,
-                            Latitude = 26.914442m,
-                            Longitude = 75.738313m,
-                            StreetName = "Vaishali Marg Block C"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            AreaId = 1,
-                            Deleted = false,
-                            Latitude = 26.954195m,
-                            Longitude = 75.784245m,
-                            StreetName = "RPA Road Sector 4"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            AreaId = 6,
-                            Deleted = false,
-                            Latitude = 26.906310m,
-                            Longitude = 75.735119m,
-                            StreetName = "Gandhi Path Block B"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            AreaId = 7,
-                            Deleted = false,
-                            Latitude = 26.829775m,
-                            Longitude = 75.805197m,
-                            StreetName = "Airport Road Surajpura"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            AreaId = 6,
-                            Deleted = false,
-                            Latitude = 26.912616m,
-                            Longitude = 75.743459m,
-                            StreetName = "Amrapali Marg E block"
                         });
                 });
 
@@ -598,12 +541,6 @@ namespace TaxiBookingService.Host.Migrations
                             Id = 1,
                             SettingName = "CancellationFactor",
                             Value = 0.05m
-                        },
-                        new
-                        {
-                            Id = 2,
-                            SettingName = "DriverRange",
-                            Value = 2.5m
                         });
                 });
 
