@@ -1,6 +1,6 @@
 ﻿using TaxiBookingService.Common;
 
-namespace TaxiBookingServices.API.LoginContract
+namespace TaxiBookingServices.API.Auth.AuthServiceContract
 {
     #region LoginResponseDTO
     public class LoginResponseDTO : ResponseBase

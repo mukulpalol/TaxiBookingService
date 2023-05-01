@@ -11,6 +11,5 @@
     {
         public ResponseResult ResponseResult { get; set; }
         public string ResponseMsg { get; set; }
-    }
-
+    }    
 }

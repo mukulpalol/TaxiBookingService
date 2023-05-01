@@ -1,20 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using TaxiBookingService.DAL.Models;
+using TaxiBookingService.DAL.RepositoriesContract;
 
 namespace TaxiBookingService.DAL.Repositories
 {
-    public interface IUserRepository
-    {
-        Task<User> UserEmailExists(string email);
-        Task<User> UserPhoneExists(string phone);
-        Task<Vehicle> VehicleExists(string vehicleNumber);
-        Task<Location> LocationExists(int locationId);
-        Task<Area> AreaExists(int areaId);
-        Task<Customer> CustomerExist(User user);
-        Task AddCustomer(User user, Customer customer);
-        Task AddDriver(Vehicle vehicle, User user, Driver driver);
-    }
     public class UserRepository : IUserRepository
     {
         private readonly TbsDbContext db;
@@ -90,6 +79,13 @@ namespace TaxiBookingService.DAL.Repositories
             await db.Users.AddAsync(user);
             await db.Vehicles.AddAsync(vehicle);
             await db.Drivers.AddAsync(driver);
+            await db.SaveChangesAsync();
+        }
+        #endregion
+
+        #region UpdateDatabase
+        public async Task UpdateDatabase()
+        {
             await db.SaveChangesAsync();
         }
         #endregion

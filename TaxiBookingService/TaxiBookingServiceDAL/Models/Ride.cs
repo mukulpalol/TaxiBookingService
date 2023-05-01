@@ -36,6 +36,12 @@ namespace TaxiBookingService.DAL.Models
         [Column(TypeName = "datetime")]
         public DateTime? DropTime { get; set; }
 
+        [Column(TypeName = "datetime")]
+        public DateTime? EstimatedPickUpTime { get; set; }
+
+        [Column(TypeName = "datetime")]
+        public DateTime? EstimatedDropTime { get; set; }
+
         public TimeSpan? Duration { get; set; }
 
         [Column(TypeName = "decimal(5,1)")]

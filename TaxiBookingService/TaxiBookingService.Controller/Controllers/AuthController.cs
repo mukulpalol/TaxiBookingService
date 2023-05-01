@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TaxiBookingService.Common;
 using TaxiBookingService.Logic.Services;
-using TaxiBookingServices.API.LoginContract;
+using TaxiBookingService.Logic.ServicesContract;
+using TaxiBookingServices.API.Auth.AuthServiceContract;
 
 namespace TaxiBookingService.Controller.Controllers
 {

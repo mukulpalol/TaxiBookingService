@@ -1,6 +1,6 @@
 ﻿using TaxiBookingService.Common;
 
-namespace TaxiBookingServices.API.DriverContract
+namespace TaxiBookingServices.API.Driver.DriverServiceContract
 {
     #region BookRideDriverResponse
     public class BookRideDriverResponseDTO : ResponseBase
@@ -35,7 +35,7 @@ namespace TaxiBookingServices.API.DriverContract
     #endregion
 
     #region RideAcceptResponse
-    public class RideAcceptResponseDTO  : ResponseBase { }
+    public class RideAcceptResponseDTO : ResponseBase { }
     #endregion
 
     #region RideStartedResponse

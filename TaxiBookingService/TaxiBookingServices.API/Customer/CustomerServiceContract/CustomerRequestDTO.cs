@@ -4,8 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TaxiBookingService.Common;
 
-namespace TaxiBookingServices.API.CustomerContract
+namespace TaxiBookingServices.API.Customer.CustomerServiceContract
 {
     #region BookRideRequest
     public class BookRideRequestDTO
@@ -19,8 +20,8 @@ namespace TaxiBookingServices.API.CustomerContract
         public int DropLocationId { get; set; }
 
         [Required]
-        [RegularExpression("^[0-9]{1,}$", ErrorMessage = "Enter valid vehicle type id")]
-        public int VehicleTypeId { get; set; }
+        //[RegularExpression("^[0-9]{1,}$", ErrorMessage = "Enter valid vehicle type id")]
+        public VehicleTypeEnum VehicleTypeId { get; set; }
     }
     #endregion
 

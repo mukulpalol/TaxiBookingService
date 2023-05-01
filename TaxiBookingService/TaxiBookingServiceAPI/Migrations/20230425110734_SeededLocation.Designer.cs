@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TaxiBookingService.DAL;
 
@@ -11,9 +12,10 @@ using TaxiBookingService.DAL;
 namespace TaxiBookingService.Host.Migrations
 {
     [DbContext(typeof(TbsDbContext))]
-    partial class TbsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230425110734_SeededLocation")]
+    partial class SeededLocation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
