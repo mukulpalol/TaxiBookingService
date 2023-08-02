@@ -15,13 +15,17 @@ namespace TaxiBookingService.Controller.Controllers
     public class CustomerController : ControllerBase
     {
         private readonly IRideService rideService;
+        private readonly IRideService2 rideService2;
         private readonly ILogger<CustomerController> logger;
+        private readonly IBookRideServiceSelector bookRideServiceSelector;
 
         #region Constructor
-        public CustomerController(IRideService rideService, ILogger<CustomerController> logger)
+        public CustomerController(IRideService rideService, ILogger<CustomerController> logger, IBookRideServiceSelector bookRideServiceSelector)
         {
             this.rideService = rideService;
+            //this.rideService2 = rideService2;
             this.logger = logger;
+            this.bookRideServiceSelector = bookRideServiceSelector;
         }
         #endregion
 
@@ -55,7 +59,8 @@ namespace TaxiBookingService.Controller.Controllers
             try
             {
                 logger.LogInformation("BookRide called");
-                var result = await rideService.BookRide(riderequest);
+                var service = bookRideServiceSelector.GetGatewayByIdentifier(2);
+                var result = await service.BookRide(riderequest);
                 return result;
             }
             catch (Exception ex)

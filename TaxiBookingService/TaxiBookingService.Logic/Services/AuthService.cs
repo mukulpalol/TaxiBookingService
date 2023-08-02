@@ -70,7 +70,7 @@ namespace TaxiBookingService.Logic.Services
                 var claims = new[]
                 {
                     new Claim(ClaimTypes.Email,userLogin.Email),
-                    new Claim(ClaimTypes.Role, role.RoleType)
+                    new Claim(ClaimTypes.Role, role.RoleType)                    
                 };
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
                 var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

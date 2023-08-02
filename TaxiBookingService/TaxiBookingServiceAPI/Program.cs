@@ -98,7 +98,7 @@ namespace TaxiBookingService.Host
             });
 
             builder.Services.AddScoped<IAuthService, AuthService>();
-            builder.Services.AddScoped<IDriverService, DriverService>();
+            builder.Services.AddScoped<IDriverService, DriverService>();            
             builder.Services.AddScoped<IRideService, RideService>();
             builder.Services.AddScoped<IUserService, UserService>();            
             
@@ -107,7 +107,11 @@ namespace TaxiBookingService.Host
             builder.Services.AddScoped<IDriverRepository, DriverRepository>();
             builder.Services.AddScoped<IRideRepository, RideRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
-            builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();                        
+            builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
+            
+            builder.Services.AddScoped<IRideServiceCar, RideServiceCar>();
+            builder.Services.AddScoped<IRideServiceBike, RideServiceBike>();
+            builder.Services.AddScoped<IBookRideServiceSelector, BookRideServiceSelector>();
 
             var app = builder.Build();
 

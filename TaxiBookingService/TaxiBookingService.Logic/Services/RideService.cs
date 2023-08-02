@@ -75,7 +75,7 @@ namespace TaxiBookingService.Logic.Services
         #endregion
         
         #region BookRide
-        public async Task<BookRideResponseDTO> BookRide(BookRideRequestDTO rideRequest)
+        public virtual async Task<BookRideResponseDTO> BookRide(BookRideRequestDTO rideRequest)
         {
             BookRideResponseDTO response = new BookRideResponseDTO();
             try
@@ -149,8 +149,8 @@ namespace TaxiBookingService.Logic.Services
                 return response;
             }
         }
-        #endregion     
-        
+        #endregion
+
         #region DriverRideAccept
         public async Task<RideAcceptResponseDTO> DriverRideAccept(int rideID, bool accept)
         {
