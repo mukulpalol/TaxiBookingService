@@ -11,6 +11,7 @@ namespace TaxiBookingService.Controller.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+    [ApiVersion("1.0")]
     [Authorize(Roles = "Customer")]
     public class CustomerController : ControllerBase
     {

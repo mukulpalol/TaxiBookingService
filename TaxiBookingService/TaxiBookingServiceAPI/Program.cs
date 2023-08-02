@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -97,17 +98,33 @@ namespace TaxiBookingService.Host
                 options.IdleTimeout = TimeSpan.FromMinutes(15);
             });
 
+            builder.Services.AddApiVersioning(o =>
+            {
+                o.AssumeDefaultVersionWhenUnspecified = true;
+                o.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(1, 0);
+                o.ReportApiVersions = true;
+                o.ApiVersionReader = ApiVersionReader.Combine(
+                    new QueryStringApiVersionReader("ApiVersion"));
+
+            });
+
+            builder.Services.AddVersionedApiExplorer(options =>
+                {
+                    options.GroupNameFormat = "'v'VVV";
+                    options.SubstituteApiVersionInUrl = true;
+                });
+
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IDriverService, DriverService>();
             builder.Services.AddScoped<IRideService, RideService>();
-            builder.Services.AddScoped<IUserService, UserService>();            
-            
+            builder.Services.AddScoped<IUserService, UserService>();
+
             builder.Services.AddScoped<IAuthRepository, AuthRepository>();
             builder.Services.AddScoped<ICancelRepository, CancelRepository>();
             builder.Services.AddScoped<IDriverRepository, DriverRepository>();
             builder.Services.AddScoped<IRideRepository, RideRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
-            builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();                        
+            builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
 
             var app = builder.Build();
 
